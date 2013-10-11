@@ -21,7 +21,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupMenu;
-import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnMenuItemClickListener {
 	private ParticipantsDataSource dataSource;
@@ -78,11 +77,9 @@ public class MainActivity extends Activity implements OnMenuItemClickListener {
 		switch (item.getItemId()) {
 		case POPUPMENU_ITEM_GIVE:
 			showParticipantAmountUpdateDialog(mSelectedParticipant, false);
-			Toast.makeText(this, "menu item selected " + item.getItemId(), Toast.LENGTH_SHORT).show();
 			break;
 		case POPUPMENU_ITEM_TAKE:
 			showParticipantAmountUpdateDialog(mSelectedParticipant, true);
-			Toast.makeText(this, "menu item selected " + item.getItemId(), Toast.LENGTH_SHORT).show();
 			break;
 			
 		}
@@ -165,7 +162,6 @@ public class MainActivity extends Activity implements OnMenuItemClickListener {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_add_participant:
-			Toast.makeText(this, "Adding person", Toast.LENGTH_SHORT).show();
 			showAddParticipantDialog();
 			break;
 

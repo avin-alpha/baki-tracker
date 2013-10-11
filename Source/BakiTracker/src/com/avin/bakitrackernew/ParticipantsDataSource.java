@@ -65,6 +65,13 @@ public class ParticipantsDataSource {
 		dataBase.delete(MySQLLiteHelper.TABLE_PARTICIPANTS, MySQLLiteHelper.COLUMN_ID + " = " + id, null);
 	}
 	
+	public void updateAmount(Participant participant, double amount) {
+		long id = participant.getId();
+		ContentValues values = new ContentValues();
+		values.put(MySQLLiteHelper.COLUMN_AMOUNT, amount);
+		dataBase.update(MySQLLiteHelper.TABLE_PARTICIPANTS, values, MySQLLiteHelper.COLUMN_ID + " = " + id, null);
+	}
+	
 	private Participant cursorToParticipant(Cursor cursor) {
 		Participant newParticipant = new Participant();
 		newParticipant.setId(cursor.getLong(0));

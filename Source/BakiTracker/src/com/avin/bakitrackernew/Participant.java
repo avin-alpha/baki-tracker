@@ -5,6 +5,8 @@ public class Participant {
 	private String name;
 	private double amount;
 	
+	public double amountCache;
+	
 	public long getId() {
 		return id;
 	}

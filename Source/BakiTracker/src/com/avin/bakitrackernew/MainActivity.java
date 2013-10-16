@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
@@ -13,19 +14,25 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.PopupMenu.OnMenuItemClickListener;
+import android.widget.TextView;
 
 public class MainActivity extends Activity implements OnMenuItemClickListener {
 	private ParticipantsDataSource dataSource;
 	List<Participant> mValues;
-	ArrayAdapter<Participant> mAdapter;
+//	ArrayAdapter<Participant> mAdapter;
+	ParticipantsAdapter mParticipantAdapter;
 	
 	PopupMenu mPopupMenu = null;
 	
@@ -43,15 +50,43 @@ public class MainActivity extends Activity implements OnMenuItemClickListener {
 		dataSource.open();
 		mValues = dataSource.getAllParticipants();
 		
-	    mAdapter = new ArrayAdapter<Participant>(this,
-	            android.R.layout.simple_list_item_1, mValues);
-	        setListAdapter(mAdapter);
+//	    mAdapter = new ArrayAdapter<Participant>(this,
+//	            android.R.layout.simple_list_item_1, mValues);
+//	        setListAdapter(mAdapter);
+		mParticipantAdapter = new ParticipantsAdapter();
+		setListAdapter(mParticipantAdapter);
+		
+		setupListeners();
 	}
 	
-	private void setListAdapter(ArrayAdapter<Participant> adapter) {
+	private void setupListeners() {
+		Button updateButton = (Button) findViewById(R.id.button_update);
+		updateButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				updateCacheAmount();
+				
+			}
+		});
+	}
+
+	protected void updateCacheAmount() {
+		double total = 0;
+		for (Participant p: mValues) {
+			total += p.getAmount();
+			updateAmount(p, p.amountCache, true);
+		}
+		
+		TextView tv = (TextView) findViewById(R.id.text_view_total);
+		tv.setText("" + total);
+	}
+
+	private void setListAdapter(ParticipantsAdapter adapter) {
 		ListView lv = (ListView) findViewById(R.id.participants_list);
 		registerForContextMenu(lv);		
 		lv.setAdapter(adapter);
+		lv.setItemsCanFocus(true);
 		
 		lv.setOnItemClickListener(new OnItemClickListener() {
 
@@ -131,7 +166,7 @@ public class MainActivity extends Activity implements OnMenuItemClickListener {
 		}
 		participant.setAmount(amount);
 		dataSource.updateAmount(participant, amount);
-		mAdapter.notifyDataSetChanged();
+		mParticipantAdapter.notifyDataSetChanged();
 	}
 	
 	@Override
@@ -201,12 +236,81 @@ public class MainActivity extends Activity implements OnMenuItemClickListener {
 	private void addParticipant(String name) {
 		Participant p = dataSource.createParticipant(name);
 		mValues.add(p);
-		mAdapter.notifyDataSetChanged();
+		mParticipantAdapter.notifyDataSetChanged();
 	}
 	
 	private void deleteParticipant(Participant participant) {
 		dataSource.deletePaticipant(participant);
 		mValues.remove(participant);
-		mAdapter.notifyDataSetChanged();
+		mParticipantAdapter.notifyDataSetChanged();
+	}
+	
+	public class ParticipantsAdapter extends BaseAdapter {
+		private LayoutInflater mInflater;
+		
+		public ParticipantsAdapter() {
+			mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		}
+		
+		class ViewHolder{
+			TextView name;
+			TextView amount;
+			EditText amountCache;
+		}
+		
+		@Override
+		public int getCount() {
+			return mValues.size();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			return mValues.get(position);
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			ViewHolder holder;
+			
+			if (convertView == null) {
+				holder = new ViewHolder();
+				convertView = mInflater.inflate(R.layout.participant_list_item, null);
+				holder.name = (TextView) convertView.findViewById(R.id.text_view_name);
+				holder.amount = (TextView) convertView.findViewById(R.id.text_view_amount);
+				holder.amountCache = (EditText) convertView.findViewById(R.id.edit_text_amountcache);
+				convertView.setTag(holder);
+			} else {
+				holder = (ViewHolder) convertView.getTag();
+			}
+			Participant p = mValues.get(position);
+			holder.name.setText(p.getName());
+			if (p.getAmount() < 0) {
+				holder.amount.setText("Take amount: Rs " + Math.abs(p.getAmount()));
+			} else {
+				holder.amount.setText("Give amount: Rs " + Math.abs(p.getAmount()));
+			}
+			holder.amountCache.setText(""+ p.amountCache);
+			holder.amountCache.setId(position);
+			
+			holder.amountCache.setOnFocusChangeListener(new OnFocusChangeListener() {
+				
+				@Override
+				public void onFocusChange(View v, boolean hasFocus) {
+					if (!hasFocus) {
+						int id = v.getId();
+						EditText amountCache = (EditText) v;
+						mValues.get(id).amountCache = Double.parseDouble(amountCache.getText().toString());
+					}
+				}
+			});
+			
+			return convertView;
+		}
+		
 	}
 }

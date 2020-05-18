@@ -1,7 +1,7 @@
 var root = 'mfe-pps:///';
 var pages = [
         {'page':'breach', 'targets': [{'os':'default', 'redir':root+'identityBreach'} ]},
-        {'page':'addDevice', 'targets': [{'os':'Win10', 'redir':'https://download.mcafee.com/molbin/iss-loc/ppsinstaller/redir.html'}, {'os':'Win10S', 'redir':'https://www.microsoft.com/en-us/p/mcafee-personal-security/9n1sqw2nkpds'}, {'os':'Android','redir':'https://play.google.com/store/apps/details?id=com.truekey.android'}, {'os':'iOS', 'redir':'https://apps.apple.com/us/app/true-key-by-mcafee/id932579221'}, {'os':'default', 'redir':'https://play.google.com/store/apps/details?id=com.truekey.android'} ]}
+        {'page':'addDevice', 'targets': [{'os':'Win10', 'redir':'https://download.mcafee.com/molbin/iss-loc/ppsinstaller/redir.html'}, {'os':'Win10S', 'redir':'https://www.microsoft.com/en-us/p/mcafee-personal-security/9n1sqw2nkpds'}, {'os':'Android','redir':'https://play.google.com/store/apps/details?id=com.truekey.android'}, {'os':'iOS', 'redir':'https://apps.apple.com/us/app/true-key-by-mcafee/id932579221'}, {'os':'default', 'redir':'https://www.mcafee.com/'} ]}
     ];
 var pageMap = new Map();
 
@@ -37,7 +37,6 @@ function get_page(page, os) {
 var queryParams = new URL(window.location.href).searchParams;
 
 function get_param(key) {
-	alert(navigator.userAgent.toLowerCase());
 	return (queryParams ? queryParams.get(key) : null);
 }
 
@@ -116,7 +115,8 @@ function on_load() {
     }
 
     make_page_map();
-    
+    if (on_windows_10s(get_page(p, "Win10S"))) return true;
+    if (on_windows_homepro(get_page(p, "Win10"))) return true;
     if (on_android(get_page(p, "Android"))) return true;
     if (on_ios(get_page(p, "iOS"))) return true;
     return on_other(get_page(p, "default"));

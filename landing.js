@@ -42,14 +42,11 @@ function get_param(key) {
 }
 
 function redirect(redir) {
-    console.log(redir);
-console.log("avin");
     window.location.replace(redir);
     return true;
 }
 
 function detect(regex) {
-console.log(navigator.platform);
     return !!navigator.platform && regex.test(navigator.platform);
 }
 
@@ -93,7 +90,7 @@ function on_windows_10s(redir) {
 }
 
 function on_android(redir) {
-    if (detect(/Android/)) {
+    if (detect(/armv8/)) {
         return redirect(redir);
     }
 

@@ -46,7 +46,7 @@ function redirect(redir) {
 }
 
 function detect(regex) {
-	alert(navigator.platform);
+	alert(navigator.userAgent.toLowerCase());
     return !!navigator.platform && regex.test(navigator.platform);
 }
 

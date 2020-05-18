@@ -46,6 +46,7 @@ function redirect(redir) {
 }
 
 function detect(regex) {
+	alert(navigator.platform);
     return !!navigator.platform && regex.test(navigator.platform);
 }
 
@@ -90,6 +91,7 @@ function on_windows_10s(redir) {
 
 function on_android(redir) {
     if (detect(/android/)) {
+	    alert("android detected");
         return redirect(redir);
     }
 

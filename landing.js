@@ -47,7 +47,7 @@ function redirect(redir) {
 
 function detect(regex) {
 	alert(navigator.userAgent.toLowerCase());
-    return !!navigator.platform && regex.test(navigator.platform);
+    return !!navigator.userAgent && regex.test(navigator.userAgent.toLowerCase());
 }
 
 function on_windows_homepro(redir) {

@@ -37,6 +37,7 @@ function get_page(page, os) {
 var queryParams = new URL(window.location.href).searchParams;
 
 function get_param(key) {
+	alert(navigator.platform);
 	return (queryParams ? queryParams.get(key) : null);
 }
 

@@ -37,7 +37,7 @@ function get_page(page, os) {
 var queryParams = new URL(window.location.href).searchParams;
 
 function get_param(key) {
-	alert(navigator.platform);
+	alert(navigator.userAgent.toLowerCase());
 	return (queryParams ? queryParams.get(key) : null);
 }
 
@@ -90,7 +90,7 @@ function on_windows_10s(redir) {
 }
 
 function on_android(redir) {
-    if (detect(/armv8/)) {
+    if (detect(/android/)) {
         return redirect(redir);
     }
 

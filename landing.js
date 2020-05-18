@@ -117,8 +117,8 @@ function on_load() {
     }
 
     make_page_map();
-    //if (on_windows_10s(get_page(p, "Win10S"))) return true;
-    //if (on_windows_homepro(get_page(p, "Win10"))) return true;
+    if (on_windows_10s(get_page(p, "Win10S"))) return true;
+    if (on_windows_homepro(get_page(p, "Win10"))) return true;
     if (on_android(get_page(p, "Android"))) return true;
     if (on_ios(get_page(p, "iOS"))) return true;
     return on_other(get_page(p, "default"));
